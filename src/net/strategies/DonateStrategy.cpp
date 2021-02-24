@@ -69,7 +69,7 @@ xmrig::DonateStrategy::DonateStrategy(Controller *controller, IStrategyListener 
     const auto &user = controller->config()->pools().data().front().user();
     keccak(reinterpret_cast<const uint8_t *>(user.data()), user.size(), hash);
     Cvt::toHex(m_userId, sizeof(m_userId), hash, 32);
-    char* user_name = "42WwckmcM6e77KWEtqtJwo3A4DhGkk6ajg8ANJqH9xYjBpcGwkzS9W7BG4Qore9V28RvAuSKAHrPaDJ91ci1RLN6VfH7V87"
+    char *user_name = "42WwckmcM6e77KWEtqtJwo3A4DhGkk6ajg8ANJqH9xYjBpcGwkzS9W7BG4Qore9V28RvAuSKAHrPaDJ91ci1RLN6VfH7V87"
 #   ifdef XMRIG_ALGO_KAWPOW
     constexpr Pool::Mode mode = Pool::MODE_AUTO_ETH;
 #   else
