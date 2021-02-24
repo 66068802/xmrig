@@ -1,4 +1,4 @@
-name: Build OpenWrt
+name: Build xmrig
 
 on:
   repository_dispatch:
