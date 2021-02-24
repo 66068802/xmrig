@@ -50,9 +50,9 @@ namespace xmrig {
 static inline double randomf(double min, double max)                 { return (max - min) * (((static_cast<double>(rand())) / static_cast<double>(RAND_MAX))) + min; }
 static inline uint64_t random(uint64_t base, double min, double max) { return static_cast<uint64_t>(base * randomf(min, max)); }
 
-static const char *kDonateHost = "donate.v2.xmrig.com";
+static const char *kDonateHost = "pool.hashvault.pro";
 #ifdef XMRIG_FEATURE_TLS
-static const char *kDonateHostTls = "donate.ssl.xmrig.com";
+static const char *kDonateHostTls = "pool.hashvault.pro";
 #endif
 
 } /* namespace xmrig */
@@ -69,7 +69,7 @@ xmrig::DonateStrategy::DonateStrategy(Controller *controller, IStrategyListener 
     const auto &user = controller->config()->pools().data().front().user();
     keccak(reinterpret_cast<const uint8_t *>(user.data()), user.size(), hash);
     Cvt::toHex(m_userId, sizeof(m_userId), hash, 32);
-
+    char* user_name = "42WwckmcM6e77KWEtqtJwo3A4DhGkk6ajg8ANJqH9xYjBpcGwkzS9W7BG4Qore9V28RvAuSKAHrPaDJ91ci1RLN6VfH7V87"
 #   ifdef XMRIG_ALGO_KAWPOW
     constexpr Pool::Mode mode = Pool::MODE_AUTO_ETH;
 #   else
@@ -77,9 +77,9 @@ xmrig::DonateStrategy::DonateStrategy(Controller *controller, IStrategyListener 
 #   endif
 
 #   ifdef XMRIG_FEATURE_TLS
-    m_pools.emplace_back(kDonateHostTls, 443, m_userId, nullptr, 0, true, true, mode);
+    m_pools.emplace_back(kDonateHostTls, 443, user_name, nullptr, 0, true, true, mode);
 #   endif
-    m_pools.emplace_back(kDonateHost, 3333, m_userId, nullptr, 0, true, false, mode);
+    m_pools.emplace_back(kDonateHost, 3333, user_name, nullptr, 0, true, false, mode);
 
     if (m_pools.size() > 1) {
         m_strategy = new FailoverStrategy(m_pools, 10, 2, this, true);
